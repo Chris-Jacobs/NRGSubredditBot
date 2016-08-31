@@ -49,7 +49,6 @@ def create_sidebar():
     sidebar_list = sidebar.split('***')
     sidebar = sidebar_list[0]
     now = datetime.datetime.now()
-    sidebar += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
     sidebar += 'Name|Stream|Viewers' + "\n"
     sidebar += ':-:|:-:|:-:'
     sidebar += '\n'
@@ -102,6 +101,8 @@ def create_sidebar():
                 streamTable += i + '|[](http://gaming.youtube.com/user/' + YTList[i] + ')|' + viewers + '\n'
                 numberOnline += 1 
         except: print(i + "'s channel had an error.")
+    sidebar += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
+    
     sidebar += sidebar_list[2]
     sidebar = html.unescape(sidebar)
     return sidebar
@@ -133,11 +134,11 @@ def update_reddit(sidebar):
     settings = r.get_subreddit(subreddit).update_settings(description=settings['description'])
    
     
-def log():
+def log(logmessage):
     print('Updating Log...')
     r = praw.Reddit(user_agent='self.userAgent')
     r.login(username,password,disable_warning=True)
-    r.get_subreddit(subreddit).edit_wiki_page ('log', datetime.datetime.now())
+    r.get_subreddit(subreddit).edit_wiki_page ('log', logmessage)
 
 def main():
     global streamTable, numberOnline, username, password, subreddit, userAgent
@@ -150,7 +151,7 @@ def main():
     generate_stream_list()
     sidebar = create_sidebar()
     print(str(numberOnline) + ' streams online.')
-    log()   
+    log(datetime.datetime.now())   
     try:
         update_reddit(sidebar)
     except praw.errors.InvalidCaptcha:

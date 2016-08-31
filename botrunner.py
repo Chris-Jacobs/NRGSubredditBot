@@ -21,6 +21,10 @@ while True:
         pass
     except Exception :
         print("Unexpected error:", sys.exc_info()[0])
+        try:
+            streamBot.log(sys.exc_info()[0])
+        except Exception:
+            pass
     print('Sleeping for ' + str(sleepTime) +' Minutes...')
     i = sleepTime
     while i > 0:
