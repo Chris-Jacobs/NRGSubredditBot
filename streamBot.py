@@ -7,6 +7,7 @@ username = ''
 password = ''
 subreddit = ''
 userAgent = ''
+twitchKey = ''
 numberOnline = 0
 streamList = {
 
@@ -17,13 +18,14 @@ mlgList = {
  }
  
 YTList = {
-    'J':'OpTicJ'
+    'J':'OpTicJ',
+    'H3CZ':'h3czplay'
  }
     
 def stream_online(stream):
     global numberOnline
     response = ""
-    response = urllib.request.urlopen('https://api.twitch.tv/kraken/streams?channel=' + streamList[stream])
+    response = urllib.request.urlopen('https://api.twitch.tv/kraken/streams?channel=' + streamList[stream] + '&client_id=' + twitchKey)
     html = response.read()
     html = str(html)
 
@@ -141,11 +143,12 @@ def log(logmessage):
     r.get_subreddit(subreddit).edit_wiki_page ('log', logmessage)
 
 def main():
-    global streamTable, numberOnline, username, password, subreddit, userAgent
+    global streamTable, numberOnline, username, password, subreddit, userAgent, twitchKey
     username = variables.username
     password = variables.password
     subreddit = variables.subreddit
     userAgent = variables.userAgent
+    twitchKey = variables.twitchKey 
     streamTable = ''
     numberOnline = 0
     generate_stream_list()

@@ -8,7 +8,7 @@ streamTable = ''
 months = dailyThread.months
 ddt = ''
 day = 0
-sleepTime = 1 ##in minutes
+sleepTime = 5 ##in minutes
 ##sleepTime = 0 ## debug mode
 while True:
     print('')
@@ -22,9 +22,9 @@ while True:
     except Exception :
         print("Unexpected error:", sys.exc_info()[0])
         try:
-            streamBot.log(sys.exc_info()[0])
+             streamBot.log(sys.exc_info()[0])
         except Exception:
-            pass
+             pass
     print('Sleeping for ' + str(sleepTime) +' Minutes...')
     i = sleepTime
     while i > 0:
