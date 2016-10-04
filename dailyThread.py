@@ -66,7 +66,7 @@ def editThread(streamTable, thread):
     
     return thread
 def getThread():
-    target = open('link.txt', 'r')
+    target = open('link.txt', 'a+')
     link = target.read()
     target.close()
     if link == '':

@@ -9,23 +9,20 @@ subreddit = ''
 userAgent = ''
 twitchKey = ''
 numberOnline = 0
-streamList = {
+twitchList = {
 
  }
 streamTable = ''
 mlgList = {
-    'Scump':'mlg22'
  }
  
 YTList = {
-    'J':'OpTicJ',
-    'H3CZ':'h3czplay'
  }
     
-def stream_online(stream):
+def twitchStream(stream):
     global numberOnline
     response = ""
-    response = urllib.request.urlopen('https://api.twitch.tv/kraken/streams?channel=' + streamList[stream] + '&client_id=' + twitchKey)
+    response = urllib.request.urlopen('https://api.twitch.tv/kraken/streams?channel=' + twitchList[stream] + '&client_id=' + twitchKey)
     html = response.read()
     html = str(html)
 
@@ -36,13 +33,44 @@ def stream_online(stream):
         if index2 > index3:
             index2 = index3
         numberOnline += 1
-        return stream + "|[](http://www.twitch.tv/" + streamList[stream] +")|" + html[index:index2] + "\n"
+        return stream + "|[](http://www.twitch.tv/" + twitchList[stream] + ")|" + html[index:index2] + "\n"
     else:
         return ''
-     
+def youtubeStream(stream):
+    global numberOnline
+    response = urllib.request.urlopen('https://youtube.com/user/' + YTList[stream])
+    html1 = response.read()
+    html1 = str(html1)
+    if 'Live now' in html1:
+        index = html1.index("yt-lockup-meta-info") + 27
+        index2 = html1.index('watching') - 1
+        viewers = html1[index:index2]
+        numberOnline += 1
+        return stream + '|[](http://gaming.youtube.com/user/' + YTList[stream] + ')|' + viewers + '\n'
+    else:
+        return ''
+def mlgStream(stream):
+    response = urllib.request.urlopen('http://streamapi.majorleaguegaming.com/service/streams/all')
+    html1 = response.read()
+    html1 = str(html1)
+    index = html1.index(mlgList[stream]) + 16
+    index2 = html1.index('channel_id', index) - 2
+    status = html1[index:index2]
+    if status == '1':
+        j = html1.index('}', index2)
+        try:
+            k = html1.index('viewers', index2, j) + 9
+            viewers = html1[k:j]
+        except ValueError:
+            viewers = 'N/A'
+        numberOnline += 1
+        return stream + '|[](http://www.mlg.tv/' + i + ')|' + viewers + '\n'
+    else:
+        return ''
+
 def create_sidebar():
     global streamTable
-    global streamList
+    global twitchList
     global numberOnline
     print('Creating Sidebar...')
     r = praw.Reddit(user_agent='self.userAgent')
@@ -59,60 +87,32 @@ def create_sidebar():
     streamTable += ':-:|:-:|:-:'
     streamTable += '\n'
     ## Twitch Streams
-    for i in streamList:
-        s = stream_online(i)
+    for i in twitchList:
+        s = twitchStream(i)
         sidebar += s
         streamTable += s
     response = ""
     ## MLG Streams
-    try:
-        response = urllib.request.urlopen('http://streamapi.majorleaguegaming.com/service/streams/all')
-        html1 = response.read()
-        html1 = str(html1)
-        
-        for i in mlgList:
-            try:
-                index = html1.index(mlgList[i]) + 16
-                index2 = html1.index('channel_id' , index) - 2
-                status = html1[index:index2]
-                if status == '1':
-                    j = html1.index('}', index2)
-                    try:
-                        k = html1.index('viewers', index2,j) + 9
-                        viewers = html1[k:j]
-                    except ValueError:
-                        viewers = 'N/A'
-                    sidebar += i +'|[](http://www.mlg.tv/' + i + ')|' + viewers + '\n'
-                    streamTable += i +'|[](http://www.mlg.tv/' + i + ')|' + viewers + '\n'
-                    numberOnline += 1
-            except ValueError:
-                pass
-    except Exception:
-        print("Couldn't Retrieve MLG Streams")
+    for i in mlgList:
+        s = mlgStream(i)
+        sidebar += s
+        streamTable += s
     ## YT Streams
     for i in YTList:
-        try:
-            response = urllib.request.urlopen('https://youtube.com/user/' + YTList[i])  
-            html1 = response.read()
-            html1 = str(html1)
-            if 'Live now' in html1:
-                index = html1.index("yt-lockup-meta-info") + 27
-                index2 = html1.index('watching') - 1
-                viewers = html1[index:index2]
-                sidebar += i + '|[](http://gaming.youtube.com/user/' + YTList[i] + ')|' + viewers + '\n'
-                streamTable += i + '|[](http://gaming.youtube.com/user/' + YTList[i] + ')|' + viewers + '\n'
-                numberOnline += 1 
-        except: print(i + "'s channel had an error.")
+        s = youtubeStream(i)
+        sidebar += s
+        streamTable += s
     sidebar += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
     
     sidebar += sidebar_list[2]
     sidebar = html.unescape(sidebar)
     return sidebar
     
-def generate_stream_list():
-    global streamList
-    temp = {
-    }
+def generate_stream_lists():
+    global twitchList
+    global mlgList
+    global YTList
+
     print("Getting Streams from Wiki...")
     r = praw.Reddit(user_agent='self.userAgent')
     r.login(username,password,disable_warning=True)
@@ -122,10 +122,17 @@ def generate_stream_list():
         pair = i.split(',')
         try:
             pair[1] = pair[1].strip('\r')
-            temp[pair[0]] = pair[1]
+            parts = pair[0].split(':')
+            temp = parts[0]
+            if temp == "YT":
+                YTList[parts[1]] = pair[1]
+            elif temp == "TW":
+                twitchList[parts[1]] = pair[1]
+            elif temp == "ML":
+                mlgList[parts[1]] = pair[1]
+
         except IndexError:
             pass
-    streamList = temp
         
 def update_reddit(sidebar):
     print('Updating Sidebar...')
@@ -151,7 +158,7 @@ def main():
     twitchKey = variables.twitchKey 
     streamTable = ''
     numberOnline = 0
-    generate_stream_list()
+    generate_stream_lists()
     sidebar = create_sidebar()
     print(str(numberOnline) + ' streams online.')
     log(datetime.datetime.now())   
