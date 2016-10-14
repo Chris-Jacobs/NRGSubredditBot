@@ -9,19 +9,20 @@ subreddit = ''
 userAgent = ''
 twitchKey = ''
 numberOnline = 0
-twitchList = {
-
- }
+twitchList = {}
+mlgList = {}
+YTList = {}
+streamMap = {}
 streamTable = ''
-mlgList = {
- }
- 
-YTList = {
- }
-    
+def specialTupleAdd(tuple1, tuple2):
+    url1 = tuple1[0]
+    url2 = tuple2[0]
+    view1 = int(tuple1[1])
+    view2 = int(tuple2[1])
+    return (url1 + ' ' + url2, str(view1 + view2))
+
 def twitchStream(stream):
     global numberOnline
-    response = ""
     response = urllib.request.urlopen('https://api.twitch.tv/kraken/streams?channel=' + twitchList[stream] + '&client_id=' + twitchKey)
     html = response.read()
     html = str(html)
@@ -32,10 +33,10 @@ def twitchStream(stream):
         index3 = html.index('video_height') - 2
         if index2 > index3:
             index2 = index3
-        numberOnline += 1
-        return stream + "|[](http://www.twitch.tv/" + twitchList[stream] + ")|" + html[index:index2] + "\n"
+        viewers = html[index:index2]
+        return ("[](http://www.twitch.tv/" + twitchList[stream] + ")", viewers)
     else:
-        return ''
+        return None
 def youtubeStream(stream):
     global numberOnline
     response = urllib.request.urlopen('https://youtube.com/user/' + YTList[stream])
@@ -45,10 +46,10 @@ def youtubeStream(stream):
         index = html1.index("yt-lockup-meta-info") + 27
         index2 = html1.index('watching') - 1
         viewers = html1[index:index2]
-        numberOnline += 1
-        return stream + '|[](http://gaming.youtube.com/user/' + YTList[stream] + ')|' + viewers + '\n'
+        viewers = viewers.replace(",", "")
+        return ("[](http://gaming.youtube.com/user/" + YTList[stream] + ')', viewers)
     else:
-        return ''
+        return None
 def mlgStream(stream):
     response = urllib.request.urlopen('http://streamapi.majorleaguegaming.com/service/streams/all')
     html1 = response.read()
@@ -63,11 +64,9 @@ def mlgStream(stream):
             viewers = html1[k:j]
         except ValueError:
             viewers = 'N/A'
-        numberOnline += 1
-        return stream + '|[](http://www.mlg.tv/' + i + ')|' + viewers + '\n'
+        return ("[](http://www.mlg.tv/" + mlgList[stream] + ')', viewers)
     else:
-        return ''
-
+        return None
 def create_sidebar():
     global streamTable
     global twitchList
@@ -89,21 +88,38 @@ def create_sidebar():
     ## Twitch Streams
     for i in twitchList:
         s = twitchStream(i)
-        sidebar += s
-        streamTable += s
+        if s is not None:
+            previous = streamMap[i]
+            if previous is None:
+                streamMap[i] = s
+            else:
+                streamMap[i] = specialTupleAdd(previous, s)
     response = ""
     ## MLG Streams
     for i in mlgList:
         s = mlgStream(i)
-        sidebar += s
-        streamTable += s
+        if s is not None:
+            previous = streamMap[i]
+            if previous is None:
+                streamMap[i] = s
+            else:
+                streamMap[i] = specialTupleAdd(previous, s)
     ## YT Streams
     for i in YTList:
         s = youtubeStream(i)
-        sidebar += s
-        streamTable += s
+        if s is not None:
+            previous = streamMap[i]
+            if previous is None:
+                streamMap[i] = s
+            else:
+                streamMap[i] = specialTupleAdd(previous, s)
+    ##Create Stream List
+    for stream in streamMap:
+        tuple = streamMap[stream]
+        if tuple is not None:
+            sidebar += stream + '|' + tuple[0] + '|' + tuple[1] + '\n'
+            streamTable += stream + '|' + tuple[0] + '|' + tuple[1] + '\n'
     sidebar += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
-    
     sidebar += sidebar_list[2]
     sidebar = html.unescape(sidebar)
     return sidebar
@@ -112,18 +128,19 @@ def generate_stream_lists():
     global twitchList
     global mlgList
     global YTList
-
+    global streamMap
     print("Getting Streams from Wiki...")
     r = praw.Reddit(user_agent='self.userAgent')
     r.login(username,password,disable_warning=True)
     streams = r.get_subreddit(subreddit).get_wiki_page ('streams').content_md
-    streamers =  streams.split('\n')
+    streamers = streams.split('\n')
     for i in streamers:
         pair = i.split(',')
         try:
             pair[1] = pair[1].strip('\r')
             parts = pair[0].split(':')
             temp = parts[0]
+            streamMap[parts[1]] = None
             if temp == "YT":
                 YTList[parts[1]] = pair[1]
             elif temp == "TW":
@@ -150,7 +167,7 @@ def log(logmessage):
     r.get_subreddit(subreddit).edit_wiki_page ('log', logmessage)
 
 def main():
-    global streamTable, numberOnline, username, password, subreddit, userAgent, twitchKey
+    global streamTable, numberOnline, username, password, subreddit, userAgent, twitchKey, streamMap
     username = variables.username
     password = variables.password
     subreddit = variables.subreddit
@@ -160,8 +177,7 @@ def main():
     numberOnline = 0
     generate_stream_lists()
     sidebar = create_sidebar()
-    print(str(numberOnline) + ' streams online.')
-    log(datetime.datetime.now())   
+    log(datetime.datetime.now())
     try:
         update_reddit(sidebar)
     except praw.errors.InvalidCaptcha:
