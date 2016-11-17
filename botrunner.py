@@ -3,6 +3,7 @@ import dailyThread
 import freetalk
 import praw
 import sys
+import youtube
 from time import sleep
 streamTable = ''
 months = dailyThread.months
@@ -14,7 +15,8 @@ while True:
     print('')
     try :
         streamTable = streamBot.main()
-        ddt = dailyThread.main(streamTable, ddt)
+        yt = youtube.main()
+        ddt = dailyThread.main(streamTable, yt, ddt)
         day = freetalk.main(day)
     except praw.errors.InvalidCaptcha:
         ## This error is thrown everytime, doesn't effect functionality.
@@ -22,7 +24,7 @@ while True:
     except Exception :
         print("Unexpected error:", sys.exc_info()[0])
         try:
-             streamBot.log(sys.exc_info()[0])
+            streamBot.log(sys.exc_info()[0])
         except Exception:
              pass
     print('Sleeping for ' + str(sleepTime) +' Minutes...')

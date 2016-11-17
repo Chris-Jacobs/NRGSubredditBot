@@ -23,7 +23,10 @@ def specialTupleAdd(tuple1, tuple2):
 
 def twitchStream(stream):
     global numberOnline
-    response = urllib.request.urlopen('https://api.twitch.tv/kraken/streams?channel=' + twitchList[stream] + '&client_id=' + twitchKey)
+    try:
+        response = urllib.request.urlopen('https://api.twitch.tv/kraken/streams?channel=' + twitchList[stream] + '&client_id=' + twitchKey)
+    except Exception:
+        return None;
     html = response.read()
     html = str(html)
 
@@ -39,7 +42,10 @@ def twitchStream(stream):
         return None
 def youtubeStream(stream):
     global numberOnline
-    response = urllib.request.urlopen('https://youtube.com/user/' + YTList[stream])
+    try:
+        response = urllib.request.urlopen('https://youtube.com/user/' + YTList[stream])
+    except Exception:
+        return None;
     html1 = response.read()
     html1 = str(html1)
     if 'Live now' in html1:
@@ -51,7 +57,10 @@ def youtubeStream(stream):
     else:
         return None
 def mlgStream(stream):
-    response = urllib.request.urlopen('http://streamapi.majorleaguegaming.com/service/streams/all')
+    try:
+        response = urllib.request.urlopen('http://streamapi.majorleaguegaming.com/service/streams/all')
+    except Exception:
+        return None;
     html1 = response.read()
     html1 = str(html1)
     index = html1.index(mlgList[stream]) + 16
@@ -64,7 +73,7 @@ def mlgStream(stream):
             viewers = html1[k:j]
         except ValueError:
             viewers = 'N/A'
-        return ("[](http://www.mlg.tv/" + mlgList[stream] + ')', viewers)
+        return ("[](http://www.mlg.tv/" + stream + ')', viewers)
     else:
         return None
 def create_sidebar():
@@ -81,7 +90,7 @@ def create_sidebar():
     sidebar += 'Name|Stream|Viewers' + "\n"
     sidebar += ':-:|:-:|:-:'
     sidebar += '\n'
-    streamTable += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
+    streamTable += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EST" + "\n" + "\n"
     streamTable += 'Name|Stream|Viewers' + "\n"
     streamTable += ':-:|:-:|:-:'
     streamTable += '\n'
@@ -130,7 +139,7 @@ def generate_stream_lists():
     global YTList
     global streamMap
     print("Getting Streams from Wiki...")
-    r = praw.Reddit(user_agent='self.userAgent')
+    r = praw.Reddit(user_agent=variables.userAgent)
     r.login(username,password,disable_warning=True)
     streams = r.get_subreddit(subreddit).get_wiki_page ('streams').content_md
     streamers = streams.split('\n')

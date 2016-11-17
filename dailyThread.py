@@ -26,12 +26,12 @@ userAgent = ""
 def getDate(submission):
     time = submission.created
     return datetime.datetime.fromtimestamp(time)
-    
-def createThread(streamTable):
+
+def createThread(streamTable, yt):
     print('Creating Daily Thread...')
     r = praw.Reddit(user_agent='self.userAgent')
     r.login(username,password, disable_warning = True)
-    ddt = createBody(streamTable)
+    ddt = createBody(streamTable, yt)
     now = datetime.datetime.now()
     ret = r.submit(subreddit, '[MISC] Daily Discussion Thread ('  + months[now.month] + str(now.day).zfill(2) + ', ' + str(now.year) + ')' , text = ddt)
     ret.set_suggested_sort(sort = 'new')
@@ -41,7 +41,7 @@ def createThread(streamTable):
     target.write(ret.permalink)
     target.close()
     return ret
-def createBody(streamTable):
+def createBody(streamTable, yt):
     r = praw.Reddit(user_agent='self.userAgent')
     r.login(username,password, disable_warning = True)
     ddt = r.get_subreddit(subreddit).get_wiki_page ('ddt').content_md
@@ -52,12 +52,16 @@ def createBody(streamTable):
     ddt += str(streamTable)
     ddt += '\n'
     ddt += "*****"
+    ddt += '\n'
+    ddt += str(yt)
+    ddt += '\n'
+    ddt += "*****"
     ddt += ddt_list[2]
     return ddt
 
-def editThread(streamTable, thread):
+def editThread(streamTable, yt,  thread):
     print('Editing Daily Thread...')
-    ddt = createBody(streamTable)
+    ddt = createBody(streamTable, yt)
     ##print(streamTable)
     r = praw.Reddit(user_agent='self.userAgent')
     r.login(username,password, disable_warning = True)
@@ -67,14 +71,16 @@ def editThread(streamTable, thread):
     return thread
 def getThread():
     target = open('link.txt', 'a+')
+    target.seek(0)
     link = target.read()
+    print(link)
     target.close()
     if link == '':
         return ''
     r = praw.Reddit(user_agent='self.userAgent')
     r.login(username,password, disable_warning = True)
     return r.get_submission(link)
-def main(streamTable, thread):
+def main(streamTable, yt, thread):
     global username, password, subreddit, userAgent
     username = variables.username
     password = variables.password
@@ -83,15 +89,16 @@ def main(streamTable, thread):
     if thread == '':
         thread = getThread()
     if thread == '': ##nothing in file
-        return createThread(streamTable)
+        return createThread(streamTable, yt)
     now = datetime.datetime.now()
     if now.hour == variables.ddthour:
         old = getDate(thread)
         if (old.day < now.day or old.month < now.month or old.year < now.year):
-            return createThread(streamTable)
+            old.unsticky()
+            return createThread(streamTable, yt)
         else:
-            return editThread(streamTable, thread) 
+            return editThread(streamTable, yt,  thread)
             
 
     else:
-        return editThread(streamTable, thread)    
+        return editThread(streamTable, yt,  thread)
