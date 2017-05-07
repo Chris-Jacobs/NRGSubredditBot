@@ -1,6 +1,7 @@
 import streamBot
 import dailyThread
 import freetalk
+import matchthreads
 import praw
 import sys
 import youtube
@@ -15,6 +16,7 @@ while True:
     print('')
     if not debugMode:
         try :
+            matchthreads.main()
             streamTable = streamBot.main()
             yt = youtube.main()
             ddt = dailyThread.main(streamTable, yt, ddt)
@@ -26,6 +28,7 @@ while True:
             except Exception:
                  pass
     else:
+        matchthreads.main()
         streamTable = streamBot.main()
         yt = youtube.main()
         #yt = None
