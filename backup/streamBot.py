@@ -108,6 +108,15 @@ def create_sidebar():
             else:
                 streamMap[i] = specialTupleAdd(previous, s)
     response = ""
+    ## MLG Streams
+    for i in mlgList:
+        s = mlgStream(i)
+        if s is not None:
+            previous = streamMap[i]
+            if previous is None:
+                streamMap[i] = s
+            else:
+                streamMap[i] = specialTupleAdd(previous, s)
     ## YT Streams
     for i in YTList:
         s = youtubeStream(i)

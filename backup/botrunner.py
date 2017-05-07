@@ -16,7 +16,8 @@ while True:
     if not debugMode:
         try :
             streamTable = streamBot.main()
-            yt = youtube.main()
+            #yt = youtube.main()
+            yt = None
             ddt = dailyThread.main(streamTable, yt, ddt)
             day = freetalk.main(day)
         except Exception :
@@ -27,8 +28,8 @@ while True:
                  pass
     else:
         streamTable = streamBot.main()
-        yt = youtube.main()
-        #yt = None
+        # yt = youtube.main()
+        yt = None
         ddt = dailyThread.main(streamTable, yt, ddt)
         day = freetalk.main(day)
     print('Sleeping for ' + str(sleepTime) +' Minutes...')
