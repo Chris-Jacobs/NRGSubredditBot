@@ -2,3 +2,6 @@
 .idea/SidebarStreamBot.iml
 *.pyc
 link.txt
+*.db
+
+*.py~

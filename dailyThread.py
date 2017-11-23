@@ -1,7 +1,7 @@
 import praw
 import datetime
 import variables
-
+import cloud
 username = ""
 password = ""
 subreddit = ""
@@ -10,24 +10,27 @@ def getDate(submission):
     time = submission.created
     return datetime.datetime.fromtimestamp(time)
 
-def createThread(streamTable, yt):
+def createThread(streamTable, yt, matches):
     print('Creating Daily Thread...')
     r = praw.Reddit(client_id=variables.client_id,
                      client_secret=variables.client_secret,
                      user_agent=variables.user_agent,
                      username=variables.username,
                      password=variables.password)
-    ddt = createBody(streamTable, yt)
+    ddt = createBody(streamTable, yt, matches)
     now = datetime.datetime.now()
-    ret = r.subreddit(variables.subreddit).submit(title = '[MISC] Daily Discussion Thread ('  + variables.months[now.month] + str(now.day).zfill(2) + ', ' + str(now.year) + ')' , selftext = ddt, send_replies=False)
+    ret = r.subreddit(variables.subreddit).submit(title = '[MISC] Daily Discussion Thread and Match Thread Hub ('  + variables.months[now.month] + str(now.day).zfill(2) + ', ' + str(now.year) + ')' , selftext = ddt, send_replies=False)
     ret.comment_sort = "new"
     ret.mod.sticky(state=True, bottom = True)
+    link = cloud.main()
+    if link is not None:
+        ret.reply('[Word Cloud of all comments from the previous day.](' + link + ')')
     target = open('link.txt', 'w')
     target.truncate()
     target.write(ret.url)
     target.close()
     return ret
-def createBody(streamTable, yt):
+def createBody(streamTable, yt, matches):
     r = praw.Reddit(client_id=variables.client_id,
                      client_secret=variables.client_secret,
                      user_agent=variables.user_agent,
@@ -38,6 +41,8 @@ def createBody(streamTable, yt):
     ddt = ddt_list[0]
     ddt += '\n'
     ddt += '\n'
+    ddt += matches
+    ddt += '***** \n \n'
     ddt += str(streamTable)
     ddt += '\n'
     ddt += "*****"
@@ -49,9 +54,9 @@ def createBody(streamTable, yt):
     ddt += ddt_list[2]
     return ddt
 
-def editThread(streamTable, yt,  thread):
+def editThread(streamTable, yt,  thread, matches):
     print('Editing Daily Thread...')
-    ddt = createBody(streamTable, yt)
+    ddt = createBody(streamTable, yt, matches)
     ##print(streamTable)
     r = praw.Reddit(client_id=variables.client_id,
                      client_secret=variables.client_secret,
@@ -76,20 +81,20 @@ def getThread():
                      username=variables.username,
                      password=variables.password)
     return r.submission(url = link)
-def main(streamTable, yt, thread):
+def main(streamTable, yt, thread, matches):
     if thread == '':
         thread = getThread()
     if thread == '': ##nothing in file
-        return createThread(streamTable, yt)
+        return createThread(streamTable, yt,matches)
     now = datetime.datetime.now()
     if now.hour == variables.ddthour:
         old = getDate(thread)
         if (old.day < now.day or old.month < now.month or old.year < now.year):
             thread.mod.sticky(False)
-            return createThread(streamTable, yt)
+            return createThread(streamTable, yt, matches)
         else:
-            return editThread(streamTable, yt,  thread)
+            return editThread(streamTable, yt,  thread, matches)
             
 
     else:
-        return editThread(streamTable, yt,  thread)
+        return editThread(streamTable, yt,  thread, matches)

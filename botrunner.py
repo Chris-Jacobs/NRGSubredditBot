@@ -5,6 +5,7 @@ import matchthreads
 import praw
 import sys
 import youtube
+import matchhub
 from time import sleep
 streamTable = ''
 ddt = ''
@@ -18,8 +19,10 @@ while True:
         try :
             matchthreads.main()
             streamTable = streamBot.main()
-            yt = youtube.main()
-            ddt = dailyThread.main(streamTable, yt, ddt)
+            #yt = youtube.main()
+            yt = None
+            matches = matchhub.main()
+            ddt = dailyThread.main(streamTable, yt, ddt, matches)
             day = freetalk.main(day)
         except Exception :
             print("Unexpected error:", sys.exc_info()[0])
@@ -30,9 +33,10 @@ while True:
     else:
         matchthreads.main()
         streamTable = streamBot.main()
-        yt = youtube.main()
-        #yt = None
-        ddt = dailyThread.main(streamTable, yt, ddt)
+        #yt = youtube.main()
+        yt = None
+        matches = matchhub.main()
+        ddt = dailyThread.main(streamTable, yt, ddt, matches)
         day = freetalk.main(day)
     print('Sleeping for ' + str(sleepTime) +' Minutes...')
     i = sleepTime
