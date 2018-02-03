@@ -77,6 +77,12 @@ def mlgStream(stream):
         return ("[](http://www.mlg.tv/" + stream + ')', viewers)
     else:
         return None
+def duplicateSchedule(sidebar):
+    s = sidebar.index("- [")
+    e = sidebar.index("> [](#sep)")
+    schedule = sidebar[s:e - 3]
+    sidebar = sidebar[:e + 15] + schedule + sidebar[e+15:]
+    return sidebar
 def create_sidebar():
     global streamTable
     global twitchList
@@ -88,11 +94,12 @@ def create_sidebar():
                      username=variables.username,
                      password=variables.password)
     sidebar = r.subreddit(variables.subreddit).wiki['edit_sidebar'].content_md
+    sidebar = duplicateSchedule(sidebar)
     sidebar_list = sidebar.split('***')
     sidebar = sidebar_list[0]
     now = datetime.datetime.now()
     sidebar += 'Name|Stream|Viewers' + "\n"
-    sidebar += ':-:|:-:|:-:'
+    sidebar += ':-:|--:|--:'
     sidebar += '\n'
     streamTable += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EST" + "\n" + "\n"
     streamTable += 'Name|Stream|Viewers' + "\n"
@@ -139,6 +146,8 @@ def generate_stream_lists():
                      user_agent=variables.user_agent,
                      username=variables.username,
                      password=variables.password)
+    page = r.subreddit(variables.subreddit).wiki['streams']
+    print(page.content_md)
     streams = r.subreddit(variables.subreddit).wiki['streams'].content_md
     streamers = streams.split('\n')
     for i in streamers:

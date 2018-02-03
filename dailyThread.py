@@ -1,7 +1,7 @@
 import praw
 import datetime
 import variables
-import cloud
+#import cloud
 username = ""
 password = ""
 subreddit = ""
@@ -19,10 +19,11 @@ def createThread(streamTable, yt, matches):
                      password=variables.password)
     ddt = createBody(streamTable, yt, matches)
     now = datetime.datetime.now()
-    ret = r.subreddit(variables.subreddit).submit(title = '[MISC] Daily Discussion Thread and Match Thread Hub ('  + variables.months[now.month] + str(now.day).zfill(2) + ', ' + str(now.year) + ')' , selftext = ddt, send_replies=False)
+    ret = r.subreddit(variables.subreddit).submit(title = '[MISC] Daily Discussion and Match Thread Hub ('  + variables.months[now.month] + str(now.day).zfill(2) + ', ' + str(now.year) + ')' , selftext = ddt, send_replies=False)
     ret.comment_sort = "new"
     ret.mod.sticky(state=True, bottom = True)
-    link = cloud.main()
+    #link = cloud.main()
+    link = None
     if link is not None:
         ret.reply('[Word Cloud of all comments from the previous day.](' + link + ')')
     target = open('link.txt', 'w')

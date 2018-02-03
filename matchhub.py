@@ -17,6 +17,8 @@ def getThreadInfo(submission):
         ret['game'] = game
     else:
         return None
+    if 'Daily Discussion' in submission.title or 'Free Talk' in submission.title:
+        return None
     ret['locked'] = submission.locked
     ret['title'] = submission.title
     ret['time'] = submission.created_utc
@@ -49,7 +51,7 @@ def checkUsers():
     return generateTable(threads)
 def generateTable(threads):
     if len(threads) == 0:
-        return 'No recent match threads.'
+        return 'No recent match threads.' + '\n'
     else:
         table = 'Game|Thread|Comments|Views|Locked' + '\n'
         table += ':-:|-|:-:|:-:|:-:' + '\n'

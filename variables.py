@@ -1,12 +1,12 @@
 import sqlite3
 conn = sqlite3.connect('keys.db')
 c = conn.cursor()
-username, password, user_agent, twitchKey, client_secret, client_id, ytKey, imgurID, imgurSecret, schedulerbase  = c.execute("SELECT * FROM Keys").fetchone()
+username, password, user_agent, twitchKey, client_secret, client_id, ytKey, imgurID, imgurSecret, schedulerbase, mod_username, mod_password, mod_client_secret, mod_client_id = c.execute("SELECT * FROM Keys").fetchone()
 c.close()
-subreddit = "OpTicGamingSandbox"
+subreddit = "OpTicGaming"
 ddthour = 7
 ftfhour = 7
-postUsers = ['OpTicModerators']
+postUsers = ['OpTicModerators', 'Crim_Bot']
 months = {
     1:'January ',
     2:'February ',
@@ -22,13 +22,13 @@ months = {
     12:'December '
 }
 spriteMappings = {
-    'COD':'[COD](#ww2)',
-    'CSGO':'[CSGO](#csgo)',
-    'HALO':'[HALO](#halo)',
-    'LOL':'[LOL](#lol)',
-    'OW':'[OW](#ow)',
-    'GOW':'[GOW](#gow)',
-    'PUBG':'[PUBG](#pubg)',
-    'DOTA':'[DOTA](#dota)',
-    'MISC':'[MISC](#optic)'
+    'COD':'[COD](#i_ww2)',
+    'CSGO':'[CSGO](#i_cs)',
+    'HALO':'[HALO](#i_halo)',
+    'LOL':'[LOL](#i_lol)',
+    'OW':'[OW](#i_ow)',
+    'GOW':'[GOW](#i_gow)',
+    'PUBG':'[PUBG](#i_pubg)',
+    'DOTA':'[DOTA](#i_dota)',
+    'MISC':'[MISC](#i_optic)'
 }

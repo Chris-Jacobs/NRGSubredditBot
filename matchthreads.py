@@ -33,11 +33,11 @@ def main():
 	matches = getMatches().json()
 	match_count = len(matches)
 
-	r = praw.Reddit(client_id=variables.client_id,
-                     client_secret=variables.client_secret,
+	r = praw.Reddit(client_id=variables.mod_client_id,
+                     client_secret=variables.mod_client_secret,
                      user_agent=variables.user_agent,
-                     username=variables.username,
-                     password=variables.password)
+                     username=variables.mod_username,
+                     password=variables.mod_password)
 
 	for match in matches:
 		print("Posting matchthread: " + match['Title'])

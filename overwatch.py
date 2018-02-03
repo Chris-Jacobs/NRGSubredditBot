@@ -21,7 +21,8 @@ def crosspost(submission):
     try:
         if submission.title.startswith('[OW]'):
             newTitle = submission.title.replace('[OW]', '').lstrip()
-            thread = ow.submit(newTitle, url = submission.url, resubmit = False)
+            u = submission.url.replace('www', 'ho')
+            thread = ow.submit(newTitle, url = u, resubmit = False)
             thread.mod.lock()
             return True
         return False
