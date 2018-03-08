@@ -32,7 +32,10 @@ while True:
                  pass
     else:
         matchthreads.main()
-        streamTable = streamBot.main()
+        try:
+            streamTable = streamBot.main()
+        except Exception:
+            streamTable = ""
         #yt = youtube.main()
         yt = None
         matches = matchhub.main()

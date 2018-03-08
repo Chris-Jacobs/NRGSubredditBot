@@ -192,6 +192,5 @@ def main():
     numberOnline = 0
     generate_stream_lists()
     sidebar = create_sidebar()
-    log(datetime.datetime.now())
     update_reddit(sidebar)
     return streamTable
