@@ -99,7 +99,7 @@ def create_sidebar():
     sidebar = sidebar_list[0]
     now = datetime.datetime.now()
     sidebar += 'Name|Stream|Viewers' + "\n"
-    sidebar += ':-:|--:|--:'
+    sidebar += ':-:|:-:|:-:'
     sidebar += '\n'
     streamTable += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EST" + "\n" + "\n"
     streamTable += 'Name|Stream|Viewers' + "\n"

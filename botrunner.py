@@ -10,10 +10,10 @@ from time import sleep
 streamTable = ''
 ddt = ''
 day = 0
-sleepTime = 5 ##in minutes
+sleepTime = 2 ##in minutes
 debugMode = False
 while True:
-    sleepTime = 0 if debugMode else 5
+    sleepTime = 0 if debugMode else sleepTime
     print('')
     if not debugMode:
         try :
