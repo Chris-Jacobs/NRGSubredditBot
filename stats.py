@@ -29,7 +29,6 @@ def main(lastDDT):
     s += str(counter) +" comments \n\n"
     s += "[Highest Scoring Comment](" + link + ") from /u/" + str(highestComment.author) + "\n\n"
     wc = cloud.wordcloud(txt = txt)
-    wc = None
     if wc is not None:
         s += "[Yesterday's Word Cloud](" + wc + ")"
     return s
