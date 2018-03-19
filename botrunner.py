@@ -4,7 +4,6 @@ import freetalk
 import matchthreads
 import praw
 import sys
-import youtube
 import matchhub
 from time import sleep
 streamTable = ''
