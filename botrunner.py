@@ -18,7 +18,10 @@ while True:
     if not debugMode:
         try :
             matchthreads.main()
-            streamTable = streamBot.main()
+            try:
+                streamTable = streamBot.main()
+            except Exception:
+                streamTable = ""
             #yt = youtube.main()
             yt = None
             matches = matchhub.main()
@@ -26,16 +29,9 @@ while True:
             day = freetalk.main(day)
         except Exception :
             print("Unexpected error:", sys.exc_info()[0])
-            try:
-                streamBot.log(sys.exc_info()[0])
-            except Exception:
-                 pass
     else:
         matchthreads.main()
-        try:
-            streamTable = streamBot.main()
-        except Exception:
-            streamTable = ""
+        streamTable = streamBot.main()
         #yt = youtube.main()
         yt = None
         matches = matchhub.main()

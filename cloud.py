@@ -16,6 +16,7 @@ def getDailyComments():
         if (comment.created_utc < t): #timezone taken into account
             break
         txt += comment.body + " "
+
     return txt
 def getThreadComments(threadid):
     submission = reddit.submission(id = threadid)
@@ -32,14 +33,15 @@ def upload(path):
         return upload['link']
     except Exception:
         return None
-def wordcloud():
+def wordcloud(txt = None):
     try:
         imgmask = np.array(Image.open('mask.png'))
         colors = ImageColorGenerator(np.array(Image.open('whitemask.png')))
         stopwords = STOPWORDS
         stopwords.add('http')
         stopwords.add('https')
-        txt = getDailyComments()
+        if txt == None:
+            txt = getDailyComments()
         wordcloud = WordCloud(background_color='black',mask=imgmask, color_func=colors, stopwords=stopwords).generate(txt)
         image = wordcloud.to_image()
         image.save(output)

@@ -1,7 +1,7 @@
 import praw
 import datetime
 import variables
-#import cloud
+import stats
 username = ""
 password = ""
 subreddit = ""
@@ -10,6 +10,13 @@ def getDate(submission):
     time = submission.created
     return datetime.datetime.fromtimestamp(time)
 
+def getFileText():
+    target = open('link.txt', 'a+')
+    target.seek(0)
+    link = target.read()
+    print(link)
+    target.close()
+    return link
 def createThread(streamTable, yt, matches):
     print('Creating Daily Thread...')
     r = praw.Reddit(client_id=variables.client_id,
@@ -23,9 +30,12 @@ def createThread(streamTable, yt, matches):
     ret.comment_sort = "new"
     ret.mod.sticky(state=True, bottom = True)
     #link = cloud.main()
-    link = None
-    if link is not None:
-        ret.reply('[Word Cloud of all comments from the previous day.](' + link + ')')
+    try:
+        stat = stats.main(r.submission(url=getFileText()))
+    except Exception:
+        stat = None
+    if stat is not None:
+        ret.reply(stat)
     target = open('link.txt', 'w')
     target.truncate()
     target.write(ret.url)
@@ -58,7 +68,6 @@ def createBody(streamTable, yt, matches):
 def editThread(streamTable, yt,  thread, matches):
     print('Editing Daily Thread...')
     ddt = createBody(streamTable, yt, matches)
-    ##print(streamTable)
     r = praw.Reddit(client_id=variables.client_id,
                      client_secret=variables.client_secret,
                      user_agent=variables.user_agent,
@@ -68,12 +77,9 @@ def editThread(streamTable, yt,  thread, matches):
     
     
     return thread
+
 def getThread():
-    target = open('link.txt', 'a+')
-    target.seek(0)
-    link = target.read()
-    print(link)
-    target.close()
+    link = getFileText()
     if link == '':
         return ''
     r = praw.Reddit(client_id=variables.client_id,
