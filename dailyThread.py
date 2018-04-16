@@ -31,7 +31,7 @@ def createThread(streamTable, yt, matches):
     ret.mod.sticky(state=True, bottom = True)
     #link = cloud.main()
     try:
-        stat = stats.main(r.submission(url=getFileText()))
+        stat = stats.main(getFileText())
     except Exception:
         stat = None
     if stat is not None:

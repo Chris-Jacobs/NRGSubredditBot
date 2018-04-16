@@ -5,6 +5,7 @@ import praw
 import datetime
 import variables
 import json
+import widgets
 numberOnline = 0
 twitchList = {}
 mlgList = {}
@@ -29,10 +30,18 @@ def twitchStream(stream):
         return ("[](http://www.twitch.tv/" + twitchList[stream] + ")", viewers, game)
     else:
         return None
-def duplicateSchedule(sidebar):
+def getSchedule(sidebar):
     s = sidebar.index("- [")
     e = sidebar.index("> [](#sep)")
     schedule = sidebar[s:e - 3]
+    return (schedule, e)
+def getResults(sidebar):
+    s = sidebar.index("### Results")
+    s = sidebar.index(">", s)
+    e = sidebar.index(">", s+1)
+    return sidebar[s+1:e]
+def duplicateSchedule(sidebar, schedule, e):
+    schedule, e = getSchedule(sidebar)
     sidebar = sidebar[:e + 15] + schedule + sidebar[e+15:]
     return sidebar
 def create_sidebar():
@@ -46,7 +55,16 @@ def create_sidebar():
                      username=variables.username,
                      password=variables.password)
     sidebar = r.subreddit(variables.subreddit).wiki['edit_sidebar'].content_md
-    sidebar = duplicateSchedule(sidebar)
+    schedule, index = getSchedule(sidebar)
+    results = getResults(sidebar)
+    try:
+        accessToken = widgets.getAccessToken()
+        widgets.editTextWidget("widget_10mu02x5o8oyz", "Schedule", schedule, accessToken)
+        widgets.editTextWidget("widget_10sc9m3wf9td9", "Results", results, accessToken)
+    except Exception:
+        print('Widgets Error')
+        pass
+    sidebar = duplicateSchedule(sidebar,schedule, index)
     sidebar_list = sidebar.split('***')
     sidebar = sidebar_list[0]
     now = datetime.datetime.now()

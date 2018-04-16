@@ -8,12 +8,15 @@ reddit = praw.Reddit(client_id=variables.client_id,
         username=variables.username,
         password=variables.password)
 def main(lastDDT):
+    lastDDT = reddit.submission(url = lastDDT)
     subreddit = reddit.subreddit(variables.subreddit)
     highestComment = None
     score = 0
     counter = 0
     txt = ""
-    for submission in subreddit.submissions(start = lastDDT.created_utc - 10):
+    for submission in subreddit.new(limit=50):
+        if submission.id < lastDDT.id:
+            break
         print(submission.title)
         submission.comments.replace_more(limit=None)
         comments = submission.comments.list()
