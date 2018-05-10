@@ -27,7 +27,7 @@ def twitchStream(stream):
         j = json.loads(html)
         game = j['streams'][0]['game']
         viewers = j['streams'][0]['viewers']
-        return ("[](http://www.twitch.tv/" + twitchList[stream] + ")", viewers, game)
+        return ("[" + stream + "](http://www.twitch.tv/" + twitchList[stream] + ")", viewers, game)
     else:
         return None
 def getSchedule(sidebar):
@@ -68,19 +68,23 @@ def create_sidebar():
     sidebar_list = sidebar.split('***')
     sidebar = sidebar_list[0]
     now = datetime.datetime.now()
-    sidebar += 'Name|Stream|Viewers' + "\n"
-    sidebar += ':-:|:-:|:-:'
+    sidebar += 'Stream|Viewers' + "\n"
+    sidebar += '-|:-:'
     sidebar += '\n'
     streamTable += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
-    streamTable += 'Name|Stream|Viewers|Game' + "\n"
-    streamTable += ':-:|:-:|:-:|---'
+    streamTable += 'Stream|Viewers|Game' + "\n"
+    streamTable += '-|:-:|---'
     streamTable += '\n'
+    streams = []
     ## Twitch Streams
     for i in twitchList:
         tuple = twitchStream(i)
         if tuple is not None:
-            sidebar += i + '|' + tuple[0] + '|' + str(tuple[1]) + '\n'
-            streamTable += i + '|' + tuple[0] + '|' + str(tuple[1]) + '|' + tuple[2] + '\n'
+            streams.append(tuple)
+    streams.sort(key=lambda x:x[1], reverse = True)
+    for stream in streams:
+        sidebar += stream[0] + '|' + str(stream[1]) + '\n'
+        streamTable += stream[0] + '|' + str(stream[1]) + '|' + stream[2] + '\n'
     sidebar += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
     sidebar += sidebar_list[2]
     sidebar = html.unescape(sidebar)
