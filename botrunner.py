@@ -11,6 +11,8 @@ ddt = ''
 day = 0
 sleepTime = 2 ##in minutes
 debugMode = False
+if len(sys.argv) > 1:
+    debugMode = True
 while True:
     sleepTime = 0 if debugMode else sleepTime
     print('')

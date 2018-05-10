@@ -82,9 +82,13 @@ def create_sidebar():
         if tuple is not None:
             streams.append(tuple)
     streams.sort(key=lambda x:x[1], reverse = True)
+    sum = 0
     for stream in streams:
         sidebar += stream[0] + '|' + str(stream[1]) + '\n'
         streamTable += stream[0] + '|' + str(stream[1]) + '|' + stream[2] + '\n'
+        sum += stream[1]
+    if sum > 0:
+        streamTable += "**Total:**|**" + str(sum) + "**"
     sidebar += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
     sidebar += sidebar_list[2]
     sidebar = html.unescape(sidebar)
