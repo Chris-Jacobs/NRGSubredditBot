@@ -88,7 +88,7 @@ def create_sidebar():
         streamTable += stream[0] + '|' + str(stream[1]) + '|' + stream[2] + '\n'
         sum += stream[1]
     if sum > 0:
-        streamTable += "**Total:**|**" + str(sum) + "**"
+        streamTable += "**Total**|**" + str(sum) + "**"
     sidebar += "Streams Updated at: " + str(now.month).zfill(2) + "/" + str(now.day).zfill(2) + " " + str(now.hour).zfill(2) + ":" + str(now.minute).zfill(2) + " EDT" + "\n" + "\n"
     sidebar += sidebar_list[2]
     sidebar = html.unescape(sidebar)
