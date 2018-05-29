@@ -23,5 +23,6 @@ def editTextWidget(widgetID, widgetName, text, access_token = None):
         "shortName": widgetName,
         "text": text
     }
-    url = "https://oauth.reddit.com/api/v1/OpTicGaming/widget/" + widgetID
+    url = "https://oauth.reddit.com/r/OpTicGaming/api/widget/" + widgetID + "?raw_json=1"
     r = requests.put(url, json = data, headers = headers)
+    print(r.raise_for_status())
