@@ -24,7 +24,7 @@ months = {
 spriteMappings = {
     'COD':'[COD](#i_ww2)',
     'CSGO':'[CSGO](#i_cs)',
-    'HALO':'[HALO](#i_halo)',
+    'FN':'[FN](#i_fn)',
     'LOL':'[LOL](#i_lol)',
     'OW':'[OW](#i_ow)',
     'GOW':'[GOW](#i_gow)',
