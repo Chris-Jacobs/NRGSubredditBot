@@ -6,6 +6,7 @@ import praw
 import sys
 import matchhub
 from time import sleep
+import stats
 streamTable = ''
 ddt = ''
 day = 0
@@ -28,6 +29,7 @@ while True:
             matches = matchhub.main()
             ddt = dailyThread.main(streamTable, yt, ddt, matches)
             day = freetalk.main(day)
+            stats.traffic()
         except Exception :
             print("Unexpected error:", sys.exc_info()[0])
     else:
@@ -38,6 +40,7 @@ while True:
         matches = matchhub.main()
         ddt = dailyThread.main(streamTable, yt, ddt, matches)
         day = freetalk.main(day)
+        stats.traffic()
     print('Sleeping for ' + str(sleepTime) +' Minutes...')
     i = sleepTime
     while i > 0:
