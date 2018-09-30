@@ -126,7 +126,8 @@ def makeGraph(commentData, trafficData, xLabel, fileName, setLength = False, len
     return fileName
 def dailyHistory(days = 8):
     try:
-        n = now.replace(hour = 0)
+        now = datetime.now()
+        n = now.replace(hour = 0, minute = 0, second = 0, microsecond= 0)
         lastWeek = n - timedelta(days = days)
         sql = 'SELECT day(utc) as day, count(*) from comments where date >= "{date}" and date < "{current}" group by day'''.format(date = lastWeek.strftime("%Y-%m-%d %H:%M"), current = n.strftime("%Y-%m-%d %H:%M"))
         cur.execute(sql)
