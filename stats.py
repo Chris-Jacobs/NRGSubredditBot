@@ -18,9 +18,7 @@ db = True
 conn = mysql.connector.connect(host = variables.localIP, user = variables.dbUser, password=variables.dbPassword,database = 'optic_reddit')
 conn.set_charset_collation('utf8mb4', 'utf8mb4_general_ci')
 cur = conn.cursor()
-now = datetime.now()
-now = now.replace(minute = 0, second = 0, microsecond= 0)
-last =  now- timedelta(days = 1)
+
 
 def upload(path):
     try:
@@ -141,6 +139,9 @@ def dailyHistory(days = 8):
         return None
 
 def hourlyHistory():
+    now = datetime.now()
+    now = now.replace(minute = 0, second = 0, microsecond= 0)
+    last =  now- timedelta(days = 1)
     try:
         sql = 'SELECT hour(UTC) as hour, count(*) from comments where date >= "{date}" and date < "{current}" group by hour'''.format(date = last.strftime("%Y-%m-%d %H:%M"), current = now.strftime("%Y-%m-%d %H:%M"))
         cur.execute(sql)
@@ -155,6 +156,9 @@ def hourlyHistory():
         
 def main():
     traffic()
+    now = datetime.now()
+    now = now.replace(minute = 0, second = 0, microsecond= 0)
+    last =  now- timedelta(days = 1)
     highestComment = None
     score = 0
     counter = 0
