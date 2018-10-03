@@ -8,6 +8,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from imgurpython import ImgurClient
+import re
 
 reddit = praw.Reddit(client_id=variables.client_id,
         client_secret=variables.client_secret,
@@ -154,7 +155,27 @@ def hourlyHistory():
     except:
         return None
 
-        
+def oldDaily():
+    regex = re.compile("(Stream.*Discussion)|(Daily Discussion)")
+    now = datetime.now()
+    try:
+        sql = 'SELECT year(date), id, title, author from posts where month(date) = {month} and day(date) = {day} and year(date) < {year} order by date asc'.format(month = now.month, day = now.day, year = now.year)
+        cur.execute(sql)
+        threads = cur.fetchall()
+        dailys = []
+        for thread in threads:
+            print(thread)
+            title = thread[2]
+            result = regex.search(title)
+            if result is not None:
+                dailys.append(thread)
+        s = "Old Daily Discussion Threads: "
+        for daily in dailys:
+            s += "[{year}]({link}) ".format(year = daily[0], link = "https://redd.it/" + daily[1])
+        return s
+    except:
+        return ""
+    
 def main():
     traffic()
     now = datetime.now()
@@ -192,5 +213,6 @@ def main():
     week = dailyHistory()
     if week is not None:
         s += "[Traffic per day for Last 7 Days](" + week + ")" + "\n\n"
+    s += oldDaily() + "\n\n"
     return s
 
