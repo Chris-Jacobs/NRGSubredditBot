@@ -203,7 +203,10 @@ def main():
     link = 'https://www.reddit.com' + highestComment.permalink
     s= "**Summary of Yesterday** \n\n"
     s += str(counter) +" comments \n\n"
-    s += "[Highest Scoring Comment](" + link + ") from /u/" + str(highestComment.author) + "\n\n"
+    s += "[Highest Scoring Comment](" + link + ") from /u/" + str(highestComment.author)
+    if highestComment.author == "Crim_Bot":
+        s+= " (what a handsome ~~guy~~ bot)"
+    s += "\n\n"
     wc = cloud.wordcloud(txt = txt)
     if wc is not None:
         s += "[Yesterday's Word Cloud](" + wc + ")" + "\n\n"
