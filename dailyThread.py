@@ -35,7 +35,9 @@ def createThread(streamTable, yt, matches):
     except Exception:
         stat = None
     if stat is not None:
-        ret.reply(stat)
+        statComment = ret.reply(stat)
+        if "Crim_Bot" in stat:
+            statComment.reply("Oh shit that's me! ^(P.S. You guys need to stop)")
     target = open('link.txt', 'w')
     target.truncate()
     target.write(ret.url)
