@@ -4,10 +4,10 @@ import variables
 import requests
 
 def getMatches():
-	return requests.get(variables.schedulerbase + "getMatches.php")
+	return requests.get(variables.keys['SchedulerBase'] + "getMatches.php")
 
 def deleteScheduledMatch(id):
-	return requests.get(variables.schedulerbase + "deleteMatch.php?id=" + id)
+	return requests.get(variables.keys['SchedulerBase'] + "deleteMatch.php?id=" + id)
 
 def postMatch(r, match):
 	match_title = match['Title']
@@ -28,17 +28,9 @@ def postMatch(r, match):
 		pass
 
 
-def main():
+def main(reddit):
 	print("Checking for scheduled matchthreads.")
 	matches = getMatches().json()
-	match_count = len(matches)
-
-	r = praw.Reddit(client_id=variables.mod_client_id,
-                     client_secret=variables.mod_client_secret,
-                     user_agent=variables.user_agent,
-                     username=variables.mod_username,
-                     password=variables.mod_password)
-
 	for match in matches:
 		print("Posting matchthread: " + match['Title'])
-		postMatch(r, match)
+		postMatch(reddit, match)
