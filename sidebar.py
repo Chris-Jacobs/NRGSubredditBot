@@ -99,6 +99,7 @@ def main(reddit, table):
     Builds and Edits the Sidebar along with New Reddit Widgets
     Args:
         reddit: Authorized praw.Reddit object
+        table: Sidebar stream table to be inserted
     """
     print('Building Sidebar.')
     wikiSidebar = getSidebar(reddit)
