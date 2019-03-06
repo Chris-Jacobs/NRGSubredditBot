@@ -78,7 +78,7 @@ while True:
         except Exception:
             print('Error with Traffic')
             print(sys.exc_info()[0])
-ng for ' + str(sleepTime) +' Minutes...')
+    print('Sleeping for ' + str(sleepTime) +' Minutes...')
     i = sleepTime
     while i > 0:
         sleep(60)
