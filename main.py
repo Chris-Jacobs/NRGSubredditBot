@@ -11,6 +11,7 @@ from time import sleep
 import stats
 import traffic
 import dailyThread
+import verification
 ddt = None
 day = 0
 sleepTime = 2 ##in minutes
@@ -18,7 +19,7 @@ debugMode = True
 if len(sys.argv) > 1:
     debugMode = True
 while True:
-    sleepTime = 0 if debugMode else sleepTime
+    #sleepTime = 0 if debugMode else sleepTime
     print('')
     botReddit = praw.Reddit(client_id = variables.keys['RedditBotClientID'],
                     client_secret = variables.keys['RedditBotClientSecret'],
@@ -38,7 +39,8 @@ while True:
         ddt = dailyThread.main(ddt, ddtStreamTable, matchTable, botReddit)
         freetalk.main(botReddit)
         traffic.main(botReddit)
-        exit()
+        verification.main(botReddit)
+        #exit()
     else:
         try:
             matchthreads.main(modReddit)
@@ -77,6 +79,11 @@ while True:
             traffic.main(botReddit)
         except Exception:
             print('Error with Traffic')
+            print(sys.exc_info()[0])
+        try:
+            verification.main()
+        except Exception:
+            print('Error with Verification Flairs')
             print(sys.exc_info()[0])
     print('Sleeping for ' + str(sleepTime) +' Minutes...')
     i = sleepTime
