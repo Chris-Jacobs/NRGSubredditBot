@@ -47,11 +47,15 @@ while True:
         except Exception:
             print('Error with Match Threads site.')
             print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print("")
         try:
             ddtStreamTable, sidebarStreamTable = streams.main()
         except Exception:
             print('Error with Streams.')
             print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print("")
             ddtStreamTable = ""
             sidebarStreamTable = ""
         try:
@@ -59,11 +63,15 @@ while True:
         except Exception:
             print('Error with Sidebar.')
             print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print("")
         try:
             matchTable = matchhub.main(botReddit)
         except Exception:
             print('Error with recent matches.')
             print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print("")
             matchTable = ""
         try:
             ddt = dailyThread.main(ddt, ddtStreamTable, matchTable, botReddit)
@@ -75,16 +83,22 @@ while True:
         except Exception:
             print('Error with FTF.')
             print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print("")
         try:
             traffic.main(botReddit)
         except Exception:
             print('Error with Traffic')
             print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print("")
         try:
             verification.main()
         except Exception:
             print('Error with Verification Flairs')
             print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print("")
     print('Sleeping for ' + str(sleepTime) +' Minutes...')
     i = sleepTime
     while i > 0:

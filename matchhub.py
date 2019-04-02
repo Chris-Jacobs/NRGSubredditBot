@@ -4,14 +4,50 @@ import time
 import re
 from datetime import datetime, timedelta, timezone
 import db
+
 def isRemoved(submission):
+    """
+    Checks if Submission has been removed by moderators
+    Args:
+        submission: praw.models.Submission Object
+    Returns:
+        True if submission's been removed, False otherwise
+    """
     if submission.banned_by is not None:
         return True
     else:
         return False
 def getTag(title):
-    return re.findall('\[(.*?)\]', title)[0]
+    """
+    Pulls the tag from the Title
+    Args:
+        title: Title of the thread as a String
+    Returns:
+        A String with the tag or an empty string if no tag is present. 
+        Example: 
+            "[COD] Match Thread" returns COD
+    """
+    try:
+        return re.findall('\[(.*?)\]', title)[0]
+    except IndexError:
+        return ""
+    
 def getThreadInfo(submission):
+    """
+    Creates Dictionary with the information for the table for a thread
+    Args:
+        submission: praw.models.Submission Object
+    Returns:
+        A dictionary of the thread information
+        Example:
+        {
+            'game': 'COD',
+            'comments': 311,
+            'time': 1554154218.0,
+            'url': 'https://www.reddit.com/r/OpTicGaming/comments/b89fp9/cod_cod_is_back_appreciation_post_match_thread/',
+            'title': '[COD] CoD Is Back Appreciation Post - Match Thread (OpTic Gaming vs Enigma6)'
+        }
+    """
     ret = {}
     ret['game'] = getTag(submission.title)
     ret['title'] = submission.title
@@ -23,6 +59,15 @@ def getThreadInfo(submission):
     return ret
 
 def validThreads(threads, reddit):
+    """
+    Removes DDT's, FTF's and Removed Threads from the list of threads for the table and retreives the submissions
+    Args:
+        threads: List of threads in the Reddit fullname format - see https://www.reddit.com/dev/api/
+            Example: ['t3_b8092f', 't3_b80rrv', 't3_b89fp9']
+        reddit: Authorized praw.Reddit object
+    Returns:
+        List of submission objects from the passed in fullnames without DDT's, FTF's and removed threads
+    """
     threads = reddit.info(fullnames = threads)
     valid = []
     for thread in threads:
@@ -32,17 +77,36 @@ def validThreads(threads, reddit):
     return valid
 
 def generateTable(threads):
+    """
+    Generates Match Thread Table for the DDT
+    Args:
+        threads: List of dictionaries returned by getThreadInfo()
+            Should be pre sorted already
+    Returns:
+        String with the table. If there's recent match threads has 3 columns:
+            Game with the sprite corresponding to the tag
+            Thread with the link to the thread
+            Comments with the number of comments
+    """
+    print(threads)
     if len(threads) == 0:
         return 'No recent match threads.' + '\n'
     else:
         table = 'Game|Thread|Comments' + '\n'
         table += ':-:|-|:-:' + '\n'
         for thread in threads:
-            s = variables.spriteMappings[thread['game']] + '|[' + thread['title'] + '](' + thread['url']  + ')|' + str(thread['comments']) + '\n'
+            s = variables.spriteMappings.get(thread['game'], 'MISC') + '|[' + thread['title'] + '](' + thread['url']  + ')|' + str(thread['comments']) + '\n'
             table += s
         return table
         
 def main(reddit):
+    """
+    Builds the Match Thread Table to be inserted into the DDT
+    Args:
+        reddit: Authorized praw.Reddit object
+    Returns:
+        Match Thread Table String
+    """
     print('Getting recent matchthreads.')
     threads = db.getMatchThreads()
     threads = validThreads(threads, reddit)

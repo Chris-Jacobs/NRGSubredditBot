@@ -9,7 +9,7 @@ def getLive():
     """ 
     Fetches JSON of livestreams from Twitch Service
     Returns:
-        A dictionary of livestream data.
+        A dictionary of livestream data
         Example:
         {
             'total_viewers':2866,
@@ -26,7 +26,6 @@ def getLive():
     """ 
     r = requests.get(url + '/live').json()
     return r
-
 
 def getTimezone():
     """ 
@@ -53,7 +52,7 @@ def ddtTable(streams, timeString):
         timeString: Time String created in formatTime, added directly to DDT
     Returns:
         timeString and then a markdown table with 3 columns, Stream, Viewers, and Game. 
-        Stream Column has a markdown link of the format [Username](LinkToStream)
+            Stream Column has a markdown link of the format [Username](LinkToStream)
     """
     table = timeString + "\n\n"
     viewers = streams['total_viewers']
@@ -92,7 +91,7 @@ def main():
     """
     Handles all Livestream functionality
     Returns:
-        A tuple of strings. First is the table for the DDT, second is the table for the Sidebar.
+        A tuple of strings. First string is the table for the DDT, second string is the table for the Sidebar.
     """
     print("Getting livestreams.")
     streamList = getLive()
