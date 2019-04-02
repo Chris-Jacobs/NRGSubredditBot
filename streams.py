@@ -42,7 +42,7 @@ def formatTime(timeString):
     Returns:
         String that is added to the sidebar and DDT Table
     """
-    time = datetime.datetime.strptime(timeString, "%Y-%m-%d %H:%M:S")
+    time = datetime.datetime.strptime(timeString, "%Y-%m-%d %H:%M:%S")
     return "Streams Updated at: {month}/{day} {hour}:{minute} {timezone}".format(month = str(time.month).zfill(2), day = str(time.day).zfill(2), hour = str(time.hour).zfill(2), minute = str(time.minute).zfill(2), timezone = getTimezone())
 
 def ddtTable(streams, timeString):
