@@ -4,6 +4,7 @@ import time
 import re
 from datetime import datetime, timedelta, timezone
 import db
+from reddittable import RedditColumn, RedditTable
 
 def isRemoved(submission):
     """
@@ -83,20 +84,23 @@ def generateTable(threads):
         threads: List of dictionaries returned by getThreadInfo()
             Should be pre sorted already
     Returns:
-        String with the table. If there's recent match threads has 3 columns:
-            Game with the sprite corresponding to the tag
-            Thread with the link to the thread
-            Comments with the number of comments
+        RedditTable Object with Game, Thread, and Comments column or String if no recent threads
     """
-    print(threads)
     if len(threads) == 0:
         return 'No recent match threads.' + '\n'
     else:
-        table = 'Game|Thread|Comments' + '\n'
-        table += ':-:|-|:-:' + '\n'
+        table = RedditTable([
+                RedditColumn("Game", centered= True),
+                RedditColumn("Thread"),
+                RedditColumn("Comments")
+            ])
         for thread in threads:
-            s = variables.spriteMappings.get(thread['game'], 'MISC') + '|[' + thread['title'] + '](' + thread['url']  + ')|' + str(thread['comments']) + '\n'
-            table += s
+            row = [
+                variables.spriteMappings.get(thread['game'], 'MISC'),
+                "[{title}]({url})".format(title = thread['title'], url = thread['url']),
+                str(thread['comments'])
+            ]
+            table.addRow(row)
         return table
         
 def main(reddit):

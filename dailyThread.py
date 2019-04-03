@@ -17,10 +17,10 @@ def createBody(streamTable, matchTable, reddit):
     ddtSections = wikiDdt.split("******")
     ddtBody = ddtSections[0]
     ddtBody += "\n\n"
-    ddtBody += matchTable
+    ddtBody += str(matchTable)
     ddtBody += "*****"
     ddtBody += "\n\n"
-    ddtBody += streamTable
+    ddtBody += str(streamTable)
     ddtBody += "\n"
     ddtBody += "****"
     ddtBody += ddtSections[2]

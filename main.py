@@ -12,10 +12,11 @@ import stats
 import traffic
 import dailyThread
 import verification
+from reddittable import RedditTable
 ddt = None
 day = 0
 sleepTime = 2 ##in minutes
-debugMode = True
+debugMode = False
 if len(sys.argv) > 1:
     debugMode = True
 while True:
@@ -56,8 +57,8 @@ while True:
             print(sys.exc_info()[0])
             print(sys.exc_info()[1])
             print("")
-            ddtStreamTable = ""
-            sidebarStreamTable = ""
+            ddtStreamTable = RedditTable(None)
+            sidebarStreamTable = RedditTable(None)
         try:
             sidebar.main(botReddit, sidebarStreamTable)
         except Exception:
@@ -72,7 +73,7 @@ while True:
             print(sys.exc_info()[0])
             print(sys.exc_info()[1])
             print("")
-            matchTable = ""
+            matchTable = RedditTable(None)
         try:
             ddt = dailyThread.main(ddt, ddtStreamTable, matchTable, botReddit)
         except Exception:
@@ -93,7 +94,7 @@ while True:
             print(sys.exc_info()[1])
             print("")
         try:
-            verification.main()
+            verification.main(botReddit)
         except Exception:
             print('Error with Verification Flairs')
             print(sys.exc_info()[0])

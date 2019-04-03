@@ -63,7 +63,7 @@ def createSidebar(sidebar, table):
     Also creates the schedule and results for the New Reddit Widgets
     Args:
         sidebar: Contents of the wiki page
-        table: Stream Table to be inserted
+        table: RedditTable object which is the Stream Table to be inserted to the sidebar
     Returns:
         Tuple of strings.
             sidebar: Text of the Sidebar to be pushed to Subreddit Settings
@@ -74,7 +74,7 @@ def createSidebar(sidebar, table):
     results = getResults(sidebar)
     sidebar = duplicateSchedule(sidebar, schedule, index)
     sidebarParts = sidebar.split("***")
-    sidebar = sidebarParts[0] + table + sidebarParts[2]
+    sidebar = sidebarParts[0] + str(table) + sidebarParts[2]
     return sidebar, schedule, results
 def updateSidebar(reddit, sidebar):
     """
@@ -99,7 +99,7 @@ def main(reddit, table):
     Builds and Edits the Sidebar along with New Reddit Widgets
     Args:
         reddit: Authorized praw.Reddit object
-        table: Sidebar stream table to be inserted
+        table: RedditTable object which is the Sidebar stream table to be inserted
     """
     print('Building Sidebar.')
     wikiSidebar = getSidebar(reddit)

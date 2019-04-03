@@ -3,6 +3,7 @@ import variables
 import json
 import time
 import datetime
+from reddittable import RedditColumn, RedditTable
 url = variables.keys['StreamsBase']
 
 def getLive():
@@ -51,19 +52,20 @@ def ddtTable(streams, timeString):
         streams: Dictionary returned from getLive()
         timeString: Time String created in formatTime, added directly to DDT
     Returns:
-        timeString and then a markdown table with 3 columns, Stream, Viewers, and Game. 
+        RedditTable object with Stream, Viewers, and Game column with the timeString as a prefix
             Stream Column has a markdown link of the format [Username](LinkToStream)
     """
-    table = timeString + "\n\n"
+    table = RedditTable([RedditColumn("Stream"), RedditColumn("Viewers", centered = True), RedditColumn("Game")], prefix= timeString)
     viewers = streams['total_viewers']
-    streams = streams['streams']
-    table += "Stream|Viewers|Game" + "\n"
-    table += '-|:-:|---' + "\n"
-    for stream in streams:
+    for stream in streams['streams']:
         link = "https://twitch.tv/" + stream['name']
-        table += "[{name}]({url})|{viewers}|{game}".format(name = stream['name'], url = link, viewers = stream['viewers'], game = stream['game'])
-        table += "\n"
-    table += "**Total**|**{total}**".format(total = str(viewers))
+        row = [
+            "[{name}]({url})".format(name = stream['name'], url = link),
+            stream['viewers'],
+            stream['game']
+        ]
+        table.addRow(row)
+    table.addRow(["**Total**", "**{total}**".format(total = str(viewers))])
     return table
 def sidebarTable(streams, timeString):
     """
@@ -72,18 +74,17 @@ def sidebarTable(streams, timeString):
         streams: Dictionary returned from getLive()
         timeString: Time String created in formatTime, added directly to Sidebar
     Returns:
-        A markdown table with 2 columns, Stream and Viewers followed by the timeString. 
-        Stream Column has a markdown link of the format [Username](LinkToStream)
+        RedditTable object with Stream and Viewers column with the timeString as a suffix
+            Stream Column has a markdown link of the format [Username](LinkToStream)
     """
-    table = "Streams|Viewers" + "\n"
-    table += '-|:-:' + "\n"
-    streams = streams['streams']
-    for stream in streams:
+    table = RedditTable([RedditColumn("Streams"), RedditColumn("Viewers", centered= True)], suffix = timeString)
+    for stream in streams['streams']:
         link = "https://twitch.tv/" + stream['name']
-        table += "[{name}]({url})|{viewers}".format(name = stream['name'], url = link, viewers = stream['viewers'])
-        table += "\n"
-    
-    table += timeString + "\n\n" 
+        row = [
+            "[{name}]({url})".format(name = stream['name'], url = link),
+            stream['viewers']
+        ]
+        table.addRow(row)
     return table
 
 
@@ -91,7 +92,7 @@ def main():
     """
     Handles all Livestream functionality
     Returns:
-        A tuple of strings. First string is the table for the DDT, second string is the table for the Sidebar.
+        A tuple of RedditTable objects. First RedditTable is the table for the DDT, second RedditTable is the table for the Sidebar.
     """
     print("Getting livestreams.")
     streamList = getLive()
