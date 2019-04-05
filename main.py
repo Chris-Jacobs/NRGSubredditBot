@@ -23,7 +23,7 @@ while True:
     #sleepTime = 0 if debugMode else sleepTime
     print('')
     botReddit = praw.Reddit(client_id = variables.keys['RedditBotClientID'],
-                    client_secret = variables.keys['RedditBotClientSecret'],
+                    client_secret = variables.keys['RedditBotSecret'],
                     user_agent = variables.keys['RedditUserAgent'],
                     username = variables.keys['RedditBotUsername'],
                     password = variables.keys['RedditBotPassword'])
