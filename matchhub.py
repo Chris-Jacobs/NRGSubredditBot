@@ -92,7 +92,7 @@ def generateTable(threads):
         table = RedditTable([
                 RedditColumn("Game", centered= True),
                 RedditColumn("Thread"),
-                RedditColumn("Comments")
+                RedditColumn("Comments", centered = True)
             ])
         for thread in threads:
             row = [
