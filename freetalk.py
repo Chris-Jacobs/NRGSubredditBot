@@ -21,7 +21,7 @@ def postThread(reddit):
 def main(reddit):
     now = datetime.datetime.today()
     lastId, lastDate = db.lastFTF()
-    if now.weekday() == 4 and now.hour == variables.ftfhour and now.day != lastDate.day:
+    if now.weekday() == variables.ftfday and now.hour == variables.ftfhour and now.day != lastDate.day:
         print('Posting Free Talk Friday.')
         postThread(reddit)
     else:

@@ -3,6 +3,7 @@ import datetime
 import stats
 import variables
 import db
+import sys
 def getDate(submission):
     time = submission.created
     return datetime.datetime.fromtimestamp(time)
@@ -11,7 +12,7 @@ def statsComment(ddt, reddit):
         statComment = stats.main(reddit)
         ddt.reply(statComment)
     except Exception:
-        pass
+        print('stats comment error')
 def createBody(streamTable, matchTable, reddit):
     wikiDdt = reddit.subreddit('OpTicGaming').wiki['ddt'].content_md
     ddtSections = wikiDdt.split("******")

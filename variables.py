@@ -4,6 +4,7 @@ with open('keys.json') as f:
 subreddit = "OpTicGamingSandbox"
 ddthour = 7
 ftfhour = 7
+ftfday = 4
 scheduleWidget = "widget_10mu02x5o8oyz"
 resultsWidget = "widget_10sc9m3wf9td9"
 
