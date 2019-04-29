@@ -112,7 +112,7 @@ def processComments(comments, reddit):
     txt = ""
     score = 0
     highestComment = None
-    s = reddit.info(fulnames = comments)
+    s = reddit.info(fullnames = comments)
     for comment in s:
         txt += comment.body + " "
         cScore = comment.score
