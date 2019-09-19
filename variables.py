@@ -1,28 +1,20 @@
-import sqlite3
-conn = sqlite3.connect('keys.db')
-c = conn.cursor()
-username, password, user_agent, twitchKey, client_secret, client_id, ytKey, imgurID, imgurSecret, schedulerbase, mod_username, mod_password, mod_client_secret, mod_client_id, localIP, dbUser, dbPassword, dbIP = c.execute("SELECT * FROM Keys").fetchone()
-c.close()
-subreddit = "OpTicGaming"
+import json
+with open('keys.json') as f:
+    keys = json.load(f)
+subreddit = "OpTicGamingSandbox"
 ddthour = 7
 ftfhour = 7
+ftfday = 4
+scheduleWidget = "widget_10mu02x5o8oyz"
+resultsWidget = "widget_10sc9m3wf9td9"
+
+
+
+resultsWidget = "widget_12hs77a3izb6x"
+scheduleWidget = "widget_12hs7a8rlkbx2"
 postUsers = ['OpTicModerators', 'Crim_Bot']
-months = {
-    1:'January ',
-    2:'February ',
-    3:'March ',
-    4:'April ',
-    5:'May ',
-    6:'June ',
-    7:'July ',
-    8:'August ',
-    9:'September ',
-    10:'October ',
-    11:'November ',
-    12:'December '
-}
 spriteMappings = {
-    'COD':'[COD](#i_ww2)',
+    'COD':'[COD](#i_bo4)',
     'CSGO':'[CSGO](#i_cs)',
     'FN':'[FN](#i_fn)',
     'LOL':'[LOL](#i_lol)',

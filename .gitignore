@@ -3,6 +3,6 @@
 *.pyc
 link.txt
 *.db
-
+keys.json
 *.py~
 cloud.jpg
